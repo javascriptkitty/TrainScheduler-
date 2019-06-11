@@ -1,0 +1,26 @@
+.jumbotron {
+  background: url(../images/0_LQ2qD7uszPPh-t2H.jpg) center;
+  background-size: cover;
+  height: 250px;
+}
+
+h1 {
+  font-size: 30pt !important;
+}
+.card-header {
+  background: #c76574;
+  color: black;
+}
+
+body {
+  background: url(../images/c7iCC.jpg) center;
+}
+
+table {
+  text-align: center;
+}
+
+tr,
+.card {
+  background: rgb(243, 233, 235);
+}

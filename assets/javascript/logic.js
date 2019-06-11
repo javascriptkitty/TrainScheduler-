@@ -47,17 +47,14 @@ $("#addTrain").on("click", function(event) {
   // Uploads data to the database
   database.ref().push(newTrain);
 
-  // Logs everything to console
-  console.log(newTrain.name);
-  console.log(newTrain.destination);
-  console.log(newTrain.frequency);
+  //   console.log(newTrain.name);
+  //   console.log(newTrain.destination);
+  //   console.log(newTrain.frequency);
 
   alert("Train successfully added");
-
-  // Clears all of the text-boxes
 });
 
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+// 3. Create Firebase event for adding train to the database and a row in the html when a user adds an entry
 database.ref().on(
   "child_added",
   function(childSnapshot) {
@@ -118,5 +115,5 @@ function renderTrain(train) {
   $("#frequency-input").val("");
 }
 
-var trains = [];
+var trains = []; //trains from database
 setInterval(renderTrains, 30000);
