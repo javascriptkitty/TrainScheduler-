@@ -11,30 +11,36 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
+var trainName;
+var trainDestination;
+var firstTrain;
+var trainFrequency;
+var newTrain = {};
+
 $("#addTrain").on("click", function(event) {
   event.preventDefault();
 
-  var trainName = $("#name-input")
+  trainName = $("#name-input")
     .val()
     .trim();
-  var trainDestination = $("#destination-input")
+  trainDestination = $("#destination-input")
     .val()
     .trim();
-  var trainFirstTime = moment(
-    $("#firstTime-input")
-      .val()
-      .trim(),
-    "MM/DD/YYYY"
-  ).format("X");
-  var trainFrequency = $("#frequency-input")
+  firstTrain = $("#firstTrain-input")
     .val()
     .trim();
 
+  trainFrequency = parseInt(
+    $("#frequency-input")
+      .val()
+      .trim()
+  );
+
   // creates local "temporary" object for holding train data
-  var newTrain = {
+  newTrain = {
     name: trainName,
     destination: trainDestination,
-    firstTime: trainFirstTime,
+    firstTrain: firstTrain,
     frequency: trainFrequency
   };
 
@@ -43,14 +49,72 @@ $("#addTrain").on("click", function(event) {
 
   // Logs everything to console
   console.log(newTrain.name);
-  console.log(newTrain.Destination);
+  console.log(newTrain.destination);
   console.log(newTrain.frequency);
 
   alert("Train successfully added");
 
   // Clears all of the text-boxes
+});
+
+var trains = [];
+
+// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+database.ref().on(
+  "child_added",
+  function(childSnapshot) {
+    console.log(childSnapshot.val());
+
+    trains.push({
+      name: childSnapshot.val().name,
+      destination: childSnapshot.val().destination,
+      firstTrain: childSnapshot.val().firstTrain,
+      frequency: childSnapshot.val().frequency
+    });
+
+    renderTrains();
+  },
+  function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+  }
+);
+
+function renderTrains() {
+  for (var i = 0; i < trains.length; i++) {
+    renderTrain(trains[i]);
+  }
+}
+
+function renderTrain(train) {
+  var storeTrainName = train.name;
+  var storeTrainDestination = train.destination;
+  var storeFirstTrain = train.firstTrain;
+  var storeTrainFrequency = train.frequency;
+
+  var firstDateTime = moment("01-01-2019 " + storeFirstTrain);
+  var currentDateTime = moment();
+
+  var timeDiff = currentDateTime.diff(firstDateTime, "minutes");
+
+  var reminder = timeDiff % storeTrainFrequency;
+  var minutesLeft = storeTrainFrequency - reminder;
+  var nextTrain = moment()
+    .add(minutesLeft, "minutes")
+    .format("hh:mm");
+
+  // Create the new row
+  var newRow = $("<tr>").append(
+    $("<td>").text(storeTrainName),
+    $("<td>").text(storeTrainDestination),
+    $("<td>").text(storeTrainFrequency),
+    $("<td>").text(nextTrain),
+    $("<td>").text(minutesLeft)
+  );
+
+  // Append the new row to the table
+  $("#timeTable > tbody").append(newRow);
   $("#name-input").val("");
   $("#destination-input").val("");
   $("#firstTime-input").val("");
   $("#frequency-input").val("");
-});
+}
