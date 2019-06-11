@@ -57,8 +57,6 @@ $("#addTrain").on("click", function(event) {
   // Clears all of the text-boxes
 });
 
-var trains = [];
-
 // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
 database.ref().on(
   "child_added",
@@ -80,6 +78,7 @@ database.ref().on(
 );
 
 function renderTrains() {
+  $("#timeTable > tbody").empty();
   for (var i = 0; i < trains.length; i++) {
     renderTrain(trains[i]);
   }
@@ -100,7 +99,7 @@ function renderTrain(train) {
   var minutesLeft = storeTrainFrequency - reminder;
   var nextTrain = moment()
     .add(minutesLeft, "minutes")
-    .format("hh:mm");
+    .format("hh:mm a");
 
   // Create the new row
   var newRow = $("<tr>").append(
@@ -118,3 +117,6 @@ function renderTrain(train) {
   $("#firstTime-input").val("");
   $("#frequency-input").val("");
 }
+
+var trains = [];
+setInterval(renderTrains, 30000);
