@@ -14,6 +14,7 @@ An interactive web application where you can input a train and when it arrives. 
 - [JQuery](https://jquery.com/)
 - [Firebase](https://firebase.google.com/)
 - [Bootstrap](https://getbootstrap.com)
+- [Moment.js](https://momentjs.com)
 
 ## Author
 
